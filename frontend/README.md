@@ -1,16 +1,79 @@
-# React + Vite
+# Employee Leave Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack Employee Leave Management System developed using React, Flask, and MySQL.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This application allows employees to apply for leave and track their leave history. Admins can manage employees, view leave requests, and approve or reject leave applications.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Employee
 
-## Expanding the ESLint configuration
+- Employee login
+- Employee dashboard
+- New leave request
+- Employee ID auto-fill
+- Submit leave request
+- View leave history
+- View profile
+- Change password
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Admin
+
+- Admin login
+- Admin dashboard
+- View total employees
+- View pending, approved, and rejected leaves
+- Add employees
+- Edit employee details
+- View employee list
+- View leave requests
+- Approve leave requests
+- Reject leave requests
+- View leave history
+- View profile
+- Change password
+
+## Technology Stack
+
+### Frontend
+
+- React
+- Vite
+- React Router
+- Bootstrap
+- Recharts
+- React Toastify
+
+### Backend
+
+- Python
+- Flask
+- Flask REST API
+
+### Database
+
+- MySQL
+
+## Project Structure
+
+```text
+Employee-leave-management-system/
+│
+├── backend/
+│   ├── routes/
+│   ├── database.py
+│   └── app.py
+│
+└── frontend/
+    ├── public/
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   ├── routes/
+    │   ├── services/
+    │   └── App.jsx
+    │
+    ├── package.json
+    └── README.md

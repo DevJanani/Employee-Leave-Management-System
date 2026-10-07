@@ -1,25 +1,62 @@
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import { toast } from "react-toastify";
 
 function LeaveRequests() {
-  const requests = [
-    {
-      id: 1,
-      employee: "Janani",
-      type: "Casual Leave",
-      from: "2026-07-20",
-      to: "2026-07-22",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      employee: "Rahul",
-      type: "Sick Leave",
-      from: "2026-08-01",
-      to: "2026-08-02",
-      status: "Approved",
-    },
-  ];
+  const [requests, setRequests] = useState([]);
+
+  // Get leave requests from backend
+  const fetchRequests = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:5000/leave-requests"
+      );
+
+      const data = await response.json();
+
+      setRequests(data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load leave requests");
+    }
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  // Approve / Reject leave
+  const updateStatus = async (id, status) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/leave-requests/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: status,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(result.message);
+
+        // Refresh the table
+        fetchRequests();
+      } else {
+        toast.error(result.message || "Something went wrong");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong!");
+    }
+  };
 
   return (
     <>
@@ -29,9 +66,13 @@ function LeaveRequests() {
         <Sidebar />
 
         <div className="container-fluid p-4">
-          <h2 className="mb-4">Leave Requests</h2>
+
+          <h2 className="mb-4">
+            Leave Requests
+          </h2>
 
           <table className="table table-bordered table-striped">
+
             <thead className="table-dark">
               <tr>
                 <th>ID</th>
@@ -45,27 +86,95 @@ function LeaveRequests() {
             </thead>
 
             <tbody>
-              {requests.map((request) => (
-                <tr key={request.id}>
-                  <td>{request.id}</td>
-                  <td>{request.employee}</td>
-                  <td>{request.type}</td>
-                  <td>{request.from}</td>
-                  <td>{request.to}</td>
-                  <td>{request.status}</td>
-                  <td>
-                    <button className="btn btn-success btn-sm me-2">
-                      Approve
-                    </button>
 
-                    <button className="btn btn-danger btn-sm">
-                      Reject
-                    </button>
+              {requests.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="text-center">
+                    No leave requests found
                   </td>
                 </tr>
-              ))}
+              ) : (
+
+                requests.map((request) => (
+
+                  <tr key={request.id}>
+
+                    <td>
+                      {request.id}
+                    </td>
+
+                    <td>
+                      {request.employee}
+                    </td>
+
+                    <td>
+                      {request.type}
+                    </td>
+
+                    <td>
+  {new Date(request.from).toLocaleDateString("en-IN")}
+</td>
+
+<td>
+  {new Date(request.to).toLocaleDateString("en-IN")}
+</td>
+
+                    <td>
+  <span
+    className={
+      request.status === "Approved"
+        ? "badge bg-success"
+        : request.status === "Rejected"
+        ? "badge bg-danger"
+        : "badge bg-warning text-dark"
+    }
+  >
+    {request.status}
+  </span>
+</td>
+
+                    <td>
+
+                      {request.status === "Pending" && (
+                        <>
+                          <button
+                            className="btn btn-success btn-sm me-2"
+                            onClick={() =>
+                              updateStatus(
+                                request.id,
+                                "Approved"
+                              )
+                            }
+                          >
+                            Approve
+                          </button>
+
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() =>
+                              updateStatus(
+                                request.id,
+                                "Rejected"
+                              )
+                            }
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
+
+                    </td>
+
+                  </tr>
+
+                ))
+
+              )}
+
             </tbody>
+
           </table>
+
         </div>
       </div>
     </>
